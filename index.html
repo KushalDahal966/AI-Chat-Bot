@@ -3,9 +3,45 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat App</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="src/style.css" />
+    <title>Kushal's Chat App</title>
   </head>
   <body>
+    <header>
+      <div>
+        <h1 class="heading-text">Kushal's Chat App</h1>
+      </div>
+    </header>
+
+    <main>
+      <section class="chat-section-container">
+        <div class="chat-section">
+          <div class="ai-chat-section">
+            <img
+              src="src/images/chat-bot.png"
+              alt="ai image"
+              class="ai-image"
+            />
+            <p class="ai-chat-text">Hello, how can i help you today......</p>
+          </div>
+          <div class="user-chat-section">
+            <img src="src/images/user.png" alt="ai image" class="user-image" />
+            <p class="user-chat-text">Hello</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <section class="prompt-section-container"></section>
+    </footer>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
