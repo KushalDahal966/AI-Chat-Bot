@@ -29,18 +29,35 @@
               alt="ai image"
               class="ai-image"
             />
-            <p class="ai-chat-text">Hello, how can i help you today......</p>
+            <p class="ai-chat-text">Hey there 👋 What can I help you with?</p>
           </div>
-          <div class="user-chat-section">
+          <!-- <div class="user-chat-section">
             <img src="src/images/user.png" alt="ai image" class="user-image" />
             <p class="user-chat-text">Hello</p>
-          </div>
+          </div> -->
         </div>
       </section>
     </main>
 
     <footer>
-      <section class="prompt-section-container"></section>
+      <section class="prompt-section-container">
+        <div class="prompt-section">
+          <div class="user-input-image">
+            <i class="fa-regular fa-image"></i>
+            <input type="file" id="input-image" accept="image/*" />
+          </div>
+          <div class="user-input-text">
+            <input
+              type="text"
+              id="input-text"
+              placeholder="Ask me anything..."
+            />
+          </div>
+          <div class="send-button">
+            <i class="fa-solid fa-arrow-up"></i>
+          </div>
+        </div>
+      </section>
     </footer>
     <script type="module" src="/src/main.js"></script>
   </body>
