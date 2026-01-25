@@ -37,13 +37,13 @@ main {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* Important for proper flexbox behavior */
+  min-height: 0;
 }
 
 .chat-section-container {
   height: 70dvh;
   width: 100%;
-  padding: 32px 64px;
+  padding: 32px;
   overflow: hidden;
   flex-shrink: 0;
   overflow-y: auto;
@@ -109,7 +109,7 @@ main {
 
 .prompt-section {
   width: 100%;
-  padding: 0 64px;
+  padding: 0 32px;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -144,4 +144,30 @@ main {
   padding: 12px;
   font-size: 18px;
   color: var(--text-color);
+}
+
+@media (width <= 480px) {
+  .heading-text {
+    font-size: 24px;
+    height: 42px;
+  }
+
+  .chat-section-container {
+    padding: 18px;
+  }
+
+  .ai-chat-text,
+  .user-chat-text {
+    padding: 8px;
+  }
+
+  .user-input-image,
+  .send-button {
+    height: 32px;
+    width: 32px;
+  }
+
+  #input-text {
+    height: 32px;
+  }
 }
