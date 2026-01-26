@@ -8,35 +8,62 @@ const inputArea = document.querySelector(".user-input-text");
 const userInput = document.querySelector("#input-text");
 const sendBtn = document.querySelector(".send-button");
 
-const showLoading = () => {
-    const aiChatBubble = document.createElement("div");
-    aiChatBubble.classList.add("ai-chat-section");
-    aiChatBubble.innerHTML = `<div class="ai-chat-section">
-    <img src="src/images/chat-bot.png" alt="ai image"
-    class="ai-image"/> <p class="ai-chat-text"><i class="fa-solid fa-spinner fa-spin"></i>
-    </p> </div>`;
-    chatSection.append(aiChatBubble);
-};
+const createChatBubble = (type, content) => {
+    const chatBubble = document.createElement("div");
+    chatBubble.classList.add(`${type}-chat-section`);
 
-const showChatBubble = () => {
-    const userChatBubble = document.createElement("div");
-    userChatBubble.classList.add("user-chat-section");
-    userChatBubble.innerHTML = `<img src="src/images/user.png" alt="user image" class="user-image" />
-    <p class="user-chat-text">${userInput.value}</p>`
-    chatSection.append(userChatBubble);
-    userInput.value = "";
-};
+    const imgSrc = type === "user" ? "src/images/user.png" : "src/images/chat-bot.png";
+    const imgAlt = type === "user" ? "user image" : "ai image";
+
+    chatBubble.innerHTML = `
+        <img src="${imgSrc}" alt="${imgAlt}" class="${type}-image" />
+        <p class="${type}-chat-text">${content}</p>
+    `;
+
+    chatSection.append(chatBubble);
+
+    return chatBubble;
+}
 
 const getResponse = async () => {
-    showChatBubble();
-    showLoading();
+    createChatBubble("user", userInput.value);
+    const chatBubble = createChatBubble("ai", `<i class="fa-solid fa-spinner fa-spin"></i>`);
+
+    let response = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-goog-api-key": `${API_KEY}`,
+            },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        parts: [{ text: userInput.value }]
+                    }
+                ]
+            })
+        }
+    )
+
+    let data = await response.json();
+
+    chatBubble.querySelector(".ai-chat-text").innerHTML = data.candidates[0].content.parts[0].text;
+
+    userInput.value = "";
+
 };
-hi
+
 sendBtn.addEventListener("click", getResponse);
 userInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") getResponse();
     return;
 });
+
+imageInputBtn.addEventListener("click", () => {
+    alert("Wrok In Progress!");
+})
 
 userInput.addEventListener("focus", () => {
     setTimeout(() => {
