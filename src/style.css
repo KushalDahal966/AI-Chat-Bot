@@ -159,7 +159,7 @@ footer {
 }
 
 #input-text::placeholder {
-  color: #b5b5b5;
+  color: var(--secondary-color);
 }
 
 #input-text:focus {
