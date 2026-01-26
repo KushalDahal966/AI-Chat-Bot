@@ -29,30 +29,37 @@ const getResponse = async () => {
     createChatBubble("user", userInput.value);
     const chatBubble = createChatBubble("ai", `<i class="fa-solid fa-spinner fa-spin"></i>`);
 
-    let response = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "x-goog-api-key": `${API_KEY}`,
-            },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        parts: [{ text: userInput.value }]
-                    }
-                ]
-            })
+    try {
+        let response = await fetch(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": `${API_KEY}`,
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [{ text: userInput.value }]
+                        }
+                    ]
+                })
+            }
+        )
+
+        if (!response.ok) {
+            chatBubble.querySelector(".ai-chat-text").innerHTML = "Something Went Wrong, Try Again";
         }
-    )
 
-    let data = await response.json();
+        let data = await response.json();
 
-    chatBubble.querySelector(".ai-chat-text").innerHTML = data.candidates[0].content.parts[0].text;
+        chatBubble.querySelector(".ai-chat-text").innerHTML = data.candidates[0].content.parts[0].text;
 
-    userInput.value = "";
-
+        userInput.value = "";
+    } catch (error) {
+        chatBubble.querySelector(".ai-chat-text").innerHTML = "Something Went Wrong, Try Again";
+    }
 };
 
 sendBtn.addEventListener("click", getResponse);
