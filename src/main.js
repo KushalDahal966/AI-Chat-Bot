@@ -10,6 +10,35 @@ const inputArea = document.querySelector(".user-input-field");
 const userInput = document.querySelector("#input-text");
 const sendBtn = document.querySelector(".send-button");
 
+let imageUrl = null;
+const createImage = () => {
+    const file = imageInput.files[0];
+
+    if (!file) return;
+
+    imageUrl = URL.createObjectURL(file)
+    imagePreview.src = imageUrl;
+    imagePreview.style.display = "block";
+    imageCloseBtn.style.display = "block";
+    imageInputBtn.disabled = true;
+    imageInputBtn.style.opacity = 0.5;
+    imageInputBtn.style.cursor = "not-allowed";
+}
+const removeImage = () => {
+    if (imageUrl) {
+        URL.revokeObjectURL(imageUrl);
+        imageUrl = null;
+    }
+
+    imagePreview.src = "";
+    imagePreview.style.display = "none";
+    imageCloseBtn.style.display = "none";
+    imageInputBtn.disabled = false;
+    imageInputBtn.style.opacity = 1;
+    imageInputBtn.style.cursor = "pointer";
+}
+
+
 const createChatBubble = (type, content) => {
     const chatBubble = document.createElement("div");
     chatBubble.classList.add(`${type}-chat-section`);
@@ -17,10 +46,19 @@ const createChatBubble = (type, content) => {
     const imgSrc = type === "user" ? "src/images/user.png" : "src/images/chat-bot.png";
     const imgAlt = type === "user" ? "user image" : "ai image";
 
-    chatBubble.innerHTML = `
+    if (imageUrl) {
+        chatBubble.innerHTML = `
         <img src="${imgSrc}" alt="${imgAlt}" class="${type}-image" />
-        <p class="${type}-chat-text">${content}</p>
+        <div class="${type}-chat-text">
+        <img src="${imageUrl}" alt="Your Uploaded Image">
+        ${content}</div>
     `;
+        removeImage();
+    } else {
+        chatBubble.innerHTML = `
+        <img src="${imgSrc}" alt="${imgAlt}" class="${type}-image" />
+        <div class="${type}-chat-text">${content}</div>`
+    }
 
     chatSection.append(chatBubble);
 
@@ -38,7 +76,7 @@ const getResponse = async () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "x-goog-api-key": `${API_KEY}`,
+                    "x-goog-api-key": `${API_KEY} `,
                 },
                 body: JSON.stringify({
                     contents: [
@@ -52,6 +90,7 @@ const getResponse = async () => {
 
         if (!response.ok) {
             chatBubble.querySelector(".ai-chat-text").innerHTML = "Something Went Wrong, Try Again";
+            userInput.value = "";
         }
 
         let data = await response.json();
@@ -61,6 +100,7 @@ const getResponse = async () => {
         userInput.value = "";
     } catch (error) {
         chatBubble.querySelector(".ai-chat-text").innerHTML = "Something Went Wrong, Try Again";
+        userInput.value = "";
     }
 };
 
@@ -70,35 +110,9 @@ userInput.addEventListener("keydown", (e) => {
     return;
 });
 
-imageCloseBtn.addEventListener("click", () => {
-    if (imageUrl) {
-        URL.revokeObjectURL(imageUrl);
-        imageUrl = null;
-    }
+imageCloseBtn.addEventListener("click", removeImage);
 
-    imagePreview.src = "";
-    imagePreview.style.display = "none";
-    imageCloseBtn.style.display = "none";
-    imageInputBtn.disabled = false;
-    imageInputBtn.style.opacity = 1;
-    imageInputBtn.style.cursor = "pointer";
-
-})
-
-let imageUrl = null;
-imageInput.addEventListener("change", () => {
-    const file = imageInput.files[0];
-
-    if (!file) return;
-
-    imageUrl = URL.createObjectURL(file)
-    imagePreview.src = imageUrl;
-    imagePreview.style.display = "block";
-    imageCloseBtn.style.display = "block";
-    imageInputBtn.disabled = true;
-    imageInputBtn.style.opacity = 0.5;
-    imageInputBtn.style.cursor = "not-allowed";
-})
+imageInput.addEventListener("change", createImage);
 
 imageInputBtn.addEventListener("click", () => {
     imageInput.click();
