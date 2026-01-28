@@ -12,6 +12,7 @@ const sendBtn = document.querySelector(".send-button");
 
 let imageUrl = null;
 let selectedImageFile = null;
+let isLoading = false;
 
 const createImage = () => {
     const file = imageInput.files[0];
@@ -73,7 +74,12 @@ const createChatBubble = (type, content, image = null) => {
 }
 
 const getResponse = async () => {
-    if (!userInput.value) return;
+    if (!userInput.value || isLoading) return;
+
+    isLoading = true;
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = 0.5;
+    sendBtn.style.cursor = "not-allowed";
 
     createChatBubble("user", userInput.value, imageUrl);
     const chatBubble = createChatBubble("ai", `<i class="fa-solid fa-spinner fa-spin"></i>`);
@@ -115,6 +121,11 @@ const getResponse = async () => {
         if (!response.ok) {
             chatBubble.querySelector(".ai-chat-text").innerHTML = "Something Went Wrong, Try Again";
             userInput.value = "";
+            isLoading = false;
+            sendBtn.disabled = false;
+            sendBtn.style.opacity = 1;
+            sendBtn.style.cursor = "pointer";
+            return;
         }
 
         let data = await response.json();
@@ -133,12 +144,17 @@ const getResponse = async () => {
     } catch (error) {
         chatBubble.querySelector(".ai-chat-text").innerHTML = "Something Went Wrong, Try Again";
         userInput.value = "";
+    } finally {
+        isLoading = false;
+        sendBtn.disabled = false;
+        sendBtn.style.opacity = 1;
+        sendBtn.style.cursor = "pointer";
     }
 };
 
 sendBtn.addEventListener("click", getResponse);
 userInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") getResponse();
+    if (e.key === "Enter" && !isLoading) getResponse();
     return;
 });
 
