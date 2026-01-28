@@ -55,6 +55,10 @@ const toBase64 = () => {
     });
 }
 
+const scrollToBottom = () => {
+    chatSection.scrollTop = chatSection.scrollHeight;
+}
+
 const createChatBubble = (type, content, image = null) => {
     const chatBubble = document.createElement("div");
     chatBubble.classList.add(`${type}-chat-section`);
@@ -84,7 +88,7 @@ const getResponse = async () => {
     createChatBubble("user", userInput.value, imageUrl);
     const chatBubble = createChatBubble("ai", `<i class="fa-solid fa-spinner fa-spin"></i>`);
 
-    let parts = [{ text: userInput.value }];
+    let parts = [{ text: userInput.value.trim() }];
 
     if (imageUrl) {
         const userImage = await toBase64();
@@ -125,6 +129,7 @@ const getResponse = async () => {
             sendBtn.disabled = false;
             sendBtn.style.opacity = 1;
             sendBtn.style.cursor = "pointer";
+            scrollToBottom();
             return;
         }
 
@@ -144,6 +149,7 @@ const getResponse = async () => {
     } catch (error) {
         chatBubble.querySelector(".ai-chat-text").innerHTML = "Something Went Wrong, Try Again";
         userInput.value = "";
+        scrollToBottom();
     } finally {
         isLoading = false;
         sendBtn.disabled = false;
